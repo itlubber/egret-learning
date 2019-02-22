@@ -26,8 +26,8 @@ class AIPlayer {
 
     public getNextPoint() {
         const scoreArr = [];
-        for (let i = 0; i < this.chessData.length; i++) {
-            for (let j = 0; j < this.chessData[i].length; j++) {
+        for (let i = 1; i < this.chessData.length - 1; i++) {
+            for (let j = 1; j < this.chessData[i].length - 1; j++) {
                 if (this.chessData[i][j] != 0) {
                     continue;
                 }
