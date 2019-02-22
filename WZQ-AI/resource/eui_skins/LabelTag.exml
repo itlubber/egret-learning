@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="LabelTagSkin" width="150" height="30" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="169149d52bd" ></w:Config>
+	<e:Label id="label_title" width="50" height="30" text="{title}" size="25" x="0" verticalCenter="0"/>
+	<e:Label text=":" width="10" height="30" size="25" x="50" verticalCenter="0"/>
+	<e:Label id="label_value" width="90" height="30" text="{value}" anchorOffsetY="0" size="25" verticalCenter="0" x="60"/>
+</e:Skin>

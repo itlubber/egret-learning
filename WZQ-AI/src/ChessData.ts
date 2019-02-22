@@ -99,4 +99,16 @@ class ChessData {
             return true
         }
     }
+
+    public reset() {
+        this.lastXIndex = this.lastYIndex = 0
+        this.lastPlayer = null
+        const arr = this.data
+        for (let i = 0; i < this.max; i++) {
+            arr[i] = new Array(this.max)
+            for (let j = 0; j < this.max; j++) {
+                arr[i][j] = 0
+            }
+        }
+    }
 }

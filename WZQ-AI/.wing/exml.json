@@ -1,0 +1,15 @@
+{
+    "global": {
+        "globalAutoLayerMarkEnable": true
+    },
+    "1691491ec9f": {
+        "path": "..\\resource\\skins\\LabelTT.ts",
+        "class": "LabelTT",
+        "parentPath": ""
+    },
+    "169149d52bd": {
+        "path": "..\\resource\\skins\\LabelTag.ts",
+        "class": "LabelTag",
+        "parentPath": ""
+    }
+}

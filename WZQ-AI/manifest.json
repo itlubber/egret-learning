@@ -12,6 +12,7 @@
 		"bin-debug/AssetAdapter.js",
 		"bin-debug/ChessData.js",
 		"bin-debug/const.js",
+		"bin-debug/LabelTag.js",
 		"bin-debug/LoadingUI.js",
 		"bin-debug/Main.js",
 		"bin-debug/Platform.js",

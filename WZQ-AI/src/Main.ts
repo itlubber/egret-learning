@@ -35,6 +35,7 @@ class Main extends eui.UILayer {
     private gapHeight: number
     private chessData: ChessData
     private aiPlayer: AIPlayer
+    private ltSteps: LabelTag
 
     protected createChildren(): void {
         super.createChildren();
@@ -92,7 +93,6 @@ class Main extends eui.UILayer {
             theme.addEventListener(eui.UIEvent.COMPLETE, () => {
                 resolve();
             }, this);
-
         })
     }
 
@@ -105,6 +105,11 @@ class Main extends eui.UILayer {
         this.aiPlayer = new AIPlayer(this.chessData.data)
         // 创建棋盘
         this.createChessBoard()
+
+        this.createTopPanel()
+
+        this.createOpButton()
+
     }
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -119,6 +124,61 @@ class Main extends eui.UILayer {
 
 
     private createTopPanel(): void {
+
+
+        this.ltSteps = new LabelTag()
+        const ltSteps = this.ltSteps
+        ltSteps.label_title.text = '步骤'
+        ltSteps.label_value.text = '0'
+        ltSteps.label_value.textColor = 0x000000
+        ltSteps.x = 50
+        ltSteps.y = 50
+        ltSteps.width = 300
+        ltSteps.height = 50
+        this.addChild(ltSteps)
+
+        let lt = new LabelTag()
+        lt.label_title.text = '白方'
+        lt.label_value.text = '玩家'
+        lt.x = 50
+        lt.y = 100
+        lt.width = 300
+        lt.height = 50
+        this.addChild(lt)
+
+
+        lt = new LabelTag()
+        lt.label_title.text = '黑方'
+        lt.label_value.text = 'AI'
+        lt.x = 50
+        lt.y = 150
+        lt.width = 300
+        lt.height = 50
+        this.addChild(lt)
+    }
+
+    private createOpButton() {
+
+        const btn = new eui.Button()
+        btn.label = '重新开始'
+        btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function (evt: egret.TouchEvent) {
+            // 重置计数
+            this.ltSteps.label_value.text = '0'
+
+            //重置数据
+            this.chessData.reset()
+
+            // 重新初始化棋盘
+            this.chessRect.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlay, this)
+            this.removeChild(this.chessRect)
+
+            this.createChessBoard()
+
+        }, this)
+
+        btn.bottom = 50
+        btn.left = this.stage.stageWidth / 2
+        this.addChild(btn)
 
     }
 
@@ -193,7 +253,9 @@ class Main extends eui.UILayer {
 
         //下棋
         this.play(EPlayer.white, posIndexes.xIndex, posIndexes.yIndex)
+        this.ltSteps.label_value.text = (+this.ltSteps.label_value.text + 1) + ''
 
+        // AI下棋
         const pos = this.aiPlayer.getNextPoint()
         this.play(EPlayer.black, pos.xIndex, pos.yIndex)
 
@@ -216,7 +278,7 @@ class Main extends eui.UILayer {
         //检查结果
         const success = this.chessData.judge(xIndex, yIndex, player)
         if (success) {
-            console.log(`${player} 胜利`)
+            alert(`You ${player === 2 ? 'Win' : 'Lose'} ！！！`)
             this.chessRect.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlay, this)
         }
     }
