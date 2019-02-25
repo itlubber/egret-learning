@@ -36,6 +36,8 @@ class Main extends eui.UILayer {
     private chessData: ChessData
     private aiPlayer: AIPlayer
     private ltSteps: LabelTag
+    private playChesses: egret.Bitmap[] = []
+    private btnBack: eui.Button
 
     protected createChildren(): void {
         super.createChildren();
@@ -159,6 +161,15 @@ class Main extends eui.UILayer {
 
     private createOpButton() {
 
+        const group = new eui.Group()
+        group.layout = new eui.HorizontalLayout()
+
+        const btnBack = new eui.Button()
+        this.btnBack = btnBack
+        btnBack.label = '悔棋'
+        btnBack.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlayBack, this)
+        group.addChild(btnBack)
+
         const btn = new eui.Button()
         btn.label = '重新开始'
         btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function (evt: egret.TouchEvent) {
@@ -167,18 +178,25 @@ class Main extends eui.UILayer {
 
             //重置数据
             this.chessData.reset()
+            this.playChesses = []
 
             // 重新初始化棋盘
             this.chessRect.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlay, this)
             this.removeChild(this.chessRect)
 
             this.createChessBoard()
+            btnBack.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlayBack, this)
 
         }, this)
 
-        btn.bottom = 50
-        btn.left = this.stage.stageWidth / 2
-        this.addChild(btn)
+        group.addChild(btn)
+
+
+        group.bottom = 50
+        group.left = this.stage.stageWidth / 2
+        group.horizontalCenter = 0
+
+        this.addChild(group)
 
     }
 
@@ -191,7 +209,7 @@ class Main extends eui.UILayer {
         const linesCount = MAX_LINES
 
         const stageWidth: number = this.stage.stageWidth;
-        const chessWith = stageWidth * .9
+        const chessWith = stageWidth
 
         const rect: eui.Rect = new eui.Rect(chessWith, chessWith)
         rect.fillColor = 0xFFFFFF
@@ -201,7 +219,7 @@ class Main extends eui.UILayer {
         rect.verticalCenter = 0
         this.chessRect = rect
 
-        this.gapHeight = ~~(chessWith / (linesCount - 1))
+        this.gapHeight = (chessWith / (linesCount - 1))
         const gapHeight = this.gapHeight
 
         const shape: egret.Shape = new egret.Shape();
@@ -247,7 +265,8 @@ class Main extends eui.UILayer {
         }
 
         // 上一步不是黑子或者不是null
-        if (this.chessData.lastPlayer !== EPlayer.black && this.chessData.lastPlayer != null) {
+        const steps = this.chessData.steps
+        if (steps.length > 0 && steps[steps.length - 1].player !== EPlayer.black) {
             return;
         }
 
@@ -259,6 +278,18 @@ class Main extends eui.UILayer {
         const pos = this.aiPlayer.getNextPoint()
         this.play(EPlayer.black, pos.xIndex, pos.yIndex)
 
+    }
+
+    private onPlayBack(evt: egret.TouchEvent) {
+        if (this.chessData.steps.length > 0 && this.playChesses.length > 0) {
+            const blackChess = this.playChesses.pop()
+            this.chessRect.removeChild(blackChess)
+            this.chessData.back()
+
+            const whiteChess = this.playChesses.pop()
+            this.chessRect.removeChild(whiteChess)
+            this.chessData.back()
+        }
     }
 
     private play(player: EPlayer, xIndex: number, yIndex: number) {
@@ -275,11 +306,14 @@ class Main extends eui.UILayer {
         chess.anchorOffsetY = chess.height / 2
         this.chessRect.addChild(chess)
 
+        this.playChesses.push(chess)
+
         //检查结果
         const success = this.chessData.judge(xIndex, yIndex, player)
         if (success) {
             alert(`You ${player === 2 ? 'Win' : 'Lose'} ！！！`)
             this.chessRect.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlay, this)
+            this.btnBack.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPlayBack, this)
         }
     }
 

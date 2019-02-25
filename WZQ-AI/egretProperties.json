@@ -21,5 +21,11 @@
     {
       "name": "promise"
     }
-  ]
+  ],
+  "targets": {
+    "android": {
+      "appname": "WZQ",
+      "packagename": "com.companyname"
+    }
+  }
 }

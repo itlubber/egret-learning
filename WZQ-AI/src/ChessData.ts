@@ -1,13 +1,19 @@
 
 
+interface ChessStep {
+    xIndex: number;
+    yIndex: number;
+    player: EPlayer | null
+}
+
+
 class ChessData {
     public data: Array<Array<number>>
-    public lastXIndex: number
-    public lastYIndex: number
-    public lastPlayer: EPlayer | null = null
+    public steps: ChessStep[]
 
     constructor(public max: number) {
         this.max = max
+        this.steps = []
         this.initializeArray()
     }
 
@@ -28,9 +34,11 @@ class ChessData {
     public update(xIndex: number, yIndex: number, player: EPlayer) {
         if (xIndex >= 0 && xIndex < this.max && yIndex >= 0 && yIndex < this.max) {
             this.data[xIndex][yIndex] = player
-            this.lastXIndex = xIndex
-            this.lastYIndex = yIndex
-            this.lastPlayer = player
+            this.steps.push({
+                xIndex,
+                yIndex,
+                player
+            })
         }
     }
 
@@ -101,8 +109,7 @@ class ChessData {
     }
 
     public reset() {
-        this.lastXIndex = this.lastYIndex = 0
-        this.lastPlayer = null
+        this.steps = []
         const arr = this.data
         for (let i = 0; i < this.max; i++) {
             arr[i] = new Array(this.max)
@@ -110,5 +117,10 @@ class ChessData {
                 arr[i][j] = 0
             }
         }
+    }
+
+    public back(): void {
+        const step = this.steps.pop()
+        this.data[step.xIndex][step.yIndex] = 0
     }
 }
